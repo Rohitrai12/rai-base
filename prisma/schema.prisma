@@ -51,7 +51,6 @@ model Account {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@map("account")
 }
 
@@ -62,6 +61,10 @@ model Verification {
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
-
   @@map("verification")
+}
+
+model Workflow {
+  id String @id @default(cuid())
+  name String
 }
