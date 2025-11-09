@@ -29,30 +29,38 @@ import { Loader } from "@/components/loader";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
 
-const loginSchema = z.object({
-  email: z.email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
-});
+const registerSchema = z
+  .object({
+    email: z.email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
 type LoadingState = "idle" | "email" | "github" | "google";
 
-export function LoginForm() {
+export function RegisterForm() {
   const router = useRouter();
   const [loadingState, setLoadingState] = useState<LoadingState>("idle");
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (values: LoginFormValues) => {
+  const onSubmit = async (values: RegisterFormValues) => {
     setLoadingState("email");
-    await authClient.signIn.email(
+    await authClient.signUp.email(
       {
+        name: values.email,
         email: values.email,
         password: values.password,
         callbackURL: "/",
@@ -60,10 +68,9 @@ export function LoginForm() {
       {
         onSuccess: () => {
           router.push("/");
-          toast.success("Logged in successfully!");
         },
-        onError: ctx => {
-          toast.error(`Login failed: ${ctx.error.message}`);
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
         },
       }
     );
@@ -106,8 +113,8 @@ export function LoginForm() {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="">Welcome Back</CardTitle>
-          <CardDescription>Login to continue</CardDescription>
+          <CardTitle className="">Get Started</CardTitle>
+          <CardDescription>Create your account to continue</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -202,23 +209,41 @@ export function LoginForm() {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="********"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {loadingState === "email" ? (
                       <Loader
                         variant="inline"
                         spinnerSize="sm"
                         size="sm"
-                        text="Logging in..."
+                        text="Creating account..."
                       />
                     ) : (
-                      "Login"
+                      "Sign up"
                     )}
                   </Button>
                 </div>
                 <div className="text-center text-sm">
-                  Don't have an account?{" "}
-                  <Link href="/register" className="underline underline-offset-4">
-                    Sign up
+                  Already have an account?{" "}
+                  <Link href="/login" className="underline underline-offset-4">
+                    Login
                   </Link>
                 </div>
               </div>
