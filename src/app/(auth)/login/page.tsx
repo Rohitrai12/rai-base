@@ -1,7 +1,9 @@
-import React from 'react'
+import { LoginForm } from "@/features/auth/components/login-form";
+import { requireNoAuth } from "@/lib/auth-utils";
 
-export default function page() {
-  return (
-    <div>page</div>
-  )
-}
+const LoginPage = async () => {
+  await requireNoAuth();
+  return <LoginForm />;
+};
+
+export default LoginPage;
