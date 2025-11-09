@@ -1,10 +1,12 @@
-// app/page.tsx
+"use client";
 import { requireAuth } from "@/lib/auth-utils";
-import { caller } from "@/trpc/server";
+import { useTRPC } from "@/trpc/client";
+import { trpc } from "@/trpc/client";
+import { useQuery } from "@tanstack/react-query";
 
-export default async function Page() {
-  const session = await requireAuth(); // redirect to /login if not signed in
-  const data = await caller.getUsers();
+export default function Page() {
+  const trcp = useTRPC()
+  const {data}  = useQuery(trpc.getWorkflows.queryOptions)
   
   return <h1>{JSON.stringify(data)}</h1>;
 }
