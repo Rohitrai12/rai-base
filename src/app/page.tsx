@@ -1,12 +1,14 @@
-"use client";
-import { requireAuth } from "@/lib/auth-utils";
-import { useTRPC } from "@/trpc/client";
-import { trpc } from "@/trpc/client";
-import { useQuery } from "@tanstack/react-query";
+import { trpc } from '@/trpc/client'
+import { mutationOptions, useMutation } from '@tanstack/react-query'
+import React from 'react'
 
-export default function Page() {
-  const trcp = useTRPC()
-  const {data}  = useQuery(trpc.getWorkflows.queryOptions)
-  
-  return <h1>{JSON.stringify(data)}</h1>;
+function Page() {
+  const testAI = useMutation(trpc.testAi, mutationOptions())
+  return (
+    <div>
+        
+    </div>
+  )
 }
+
+export default Page
