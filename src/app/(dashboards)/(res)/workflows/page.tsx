@@ -1,6 +1,8 @@
 import React from 'react'
+import { requireAuth } from '@/lib/auth-utils'
 
-function Page() {
+async function Page() {
+ await requireAuth()
   return (
     <div>Workflows</div>
   )

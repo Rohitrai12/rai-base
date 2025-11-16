@@ -1,4 +1,5 @@
 import React from 'react'
+import { requireAuth } from '@/lib/auth-utils'
 
 interface PageProps {
     params: {
@@ -9,6 +10,7 @@ interface PageProps {
 async function Page ({params}: PageProps) {
     const {workflowId} = params
 
+    await requireAuth()
 
     return (
         <div>

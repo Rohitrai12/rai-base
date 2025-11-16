@@ -1,3 +1,4 @@
+import { requireAuth } from '@/lib/auth-utils'
 import React from 'react'
 
 interface PageProps {
@@ -12,6 +13,7 @@ async function Page ({params}: PageProps) {
     if (!execuationId) {
         return <div>Invalid execuationId</div>
     }
+ await requireAuth()
 
     return (
         <div>

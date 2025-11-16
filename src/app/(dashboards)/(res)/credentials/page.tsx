@@ -1,6 +1,8 @@
+import { requireAuth } from '@/lib/auth-utils'
 import React from 'react'
 
-function Page() {
+async function Page() {
+   await requireAuth()
   return (
     <div>Credentials</div>
   )
